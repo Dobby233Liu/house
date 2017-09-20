@@ -1,0 +1,16 @@
+#token: 'HERE'
+
+manhole_enable: false
+#manhole_bind: 127.0.0.1:7272
+
+max_reconnects: 255
+
+encoder: etf
+
+bot:
+  commands_require_mention: false
+  commands_prefix: '!'
+  storage_serializer: yaml
+  plugins:
+    - house.laundry
+    - house.trash
