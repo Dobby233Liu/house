@@ -12,11 +12,7 @@ EXPLATIVES = [
 
 
 
-def next_rotation(rotation, current):
-    idx = rotation.index(current)
-    if idx + 1 >= len(rotation):
-        return rotation[0]
-    return rotation[idx + 1]
+
 
 
 def next_weekday(weekday):
@@ -38,32 +34,15 @@ class TrashConfig(Config):
 
 @Plugin.with_config(TrashConfig)
 class TrashPlugin(Plugin):
-    def load(self, ctx):
-        super(TrashPlugin, self).load(ctx)
-
+    
         self.trash = self.storage.plugin('trash')
 
-        if 'next' not in self.trash:
-            self.trash['next'] = self.config.rotation[0]
-
-        if 'tuesday' not in self.trash:
-            self.trash['tuesday'] = next_weekday(1)
-
-        if 'wednesday' not in self.trash:
-            self.trash['wednesday'] = next_weekday(2)
-
-        self.spawn(self.remind_tuesday)
-        self.spawn(self.remind_wednesday)
-
-    def remind_until_acked(self, user):
-        channel = self.state.channels.get(self.config.channel)
-        msgs = []
-
+        
+        
+    
         def _g():
             while True:
-                if len(msgs):
-                    msgs[-1].delete()
-
+                
                 msgs.append(channel.send_message(u'HEY {} ITS TIME TO TAKE OUT THE {} TRASH!!¡¡!!¡!¡!¡'.format(
                     user.mention,
                     random.choice(EXPLATIVES)
@@ -89,37 +68,4 @@ class TrashPlugin(Plugin):
                     channel.send_message(u'Ok, thank you for taking out the trash {}!'.format(user))
                     return
 
-    def remind_tuesday(self):
-        while True:
-            self.trash['tuesday'] = next_weekday(1)
-            time.sleep((self.trash['tuesday'] - datetime.datetime.now()).total_seconds())
-            channel = self.state.channels.get(self.config.channel)
-            channel.send_message("@here it's time to take your trash out to the bins!")
-
-    def remind_wednesday(self):
-        while True:
-            self.trash['wednesday'] = next_weekday(2)
-            who = self.trash['next']
-            self.trash['next'] = next_rotation(self.config.rotation, who)
-
-            time.sleep((self.trash['wednesday'] - datetime.datetime.now()).total_seconds())
-            self.remind_until_acked(self.state.users.get(who))
-
-    @Plugin.command('debug', group='trash')
-    def trash_debug(self, event):
-        event.msg.reply(u'Tuesday reminder @ `{}`\nWednesday reminder @ `{}`\nNext Up: `{}`'.format(
-            self.trash['tuesday'],
-            self.trash['wednesday'],
-            str(self.state.users.get(self.trash['next'])),
-        ))
-
-    @Plugin.command('set', '<user:user>', group='trash')
-    def trash_set(self, event, user):
-        self.trash['next'] = user.id
-        event.msg.reply(':ok_hand: looks like {} is the next sucka'.format(
-            str(user)
-        ))
-
-    @Plugin.command('now', '[user:user]', group='trash')
-    def trash_now(self, event, user=None):
-        self.remind_until_acked(user or event.author)
+    
