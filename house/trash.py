@@ -6,13 +6,10 @@ import datetime
 from disco.bot import Plugin, Config
 
 EXPLATIVES = [
-    'FUCKING',
-    'GODDAMN',
-    'MOTHERFUCKING',
-    'PUNK ASS',
+    'TemTemmie'
 ]
 
-CHECK_MARK_EMOJI = u'\u2705'
+
 
 
 def next_rotation(rotation, current):
@@ -72,7 +69,7 @@ class TrashPlugin(Plugin):
                     random.choice(EXPLATIVES)
                 )))
 
-                msgs[-1].create_reaction(CHECK_MARK_EMOJI)
+                
 
                 # Wait 5 minutes
                 time.sleep(300)
